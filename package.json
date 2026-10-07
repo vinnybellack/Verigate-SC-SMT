@@ -1,0 +1,12 @@
+{
+  "name": "sc-smt-product",
+  "version": "0.2.0",
+  "private": true,
+  "description": "SC-SMT evidence-change and decision-revalidation control plane",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node --test"
+  }
+}

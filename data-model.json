@@ -1,0 +1,93 @@
+{
+  "version": "0.2",
+  "entities": {
+    "sources": [
+      "id",
+      "name",
+      "api_key_hash",
+      "trust_level",
+      "allowed_fact_prefix",
+      "active"
+    ],
+    "evidence": [
+      "id",
+      "entity_id",
+      "fact_key",
+      "value_text",
+      "source_id",
+      "authority_status",
+      "effective_from",
+      "effective_to",
+      "observed_at",
+      "version",
+      "status",
+      "predecessor_id",
+      "created_at"
+    ],
+    "dependencies": [
+      "id",
+      "upstream_type",
+      "upstream_id",
+      "downstream_type",
+      "downstream_id",
+      "dependency_type",
+      "required_state",
+      "active",
+      "created_at"
+    ],
+    "decisions": [
+      "id",
+      "entity_id",
+      "decision_type",
+      "status",
+      "evidence_bindings_json",
+      "policy_version",
+      "decision_hash",
+      "reason",
+      "created_at",
+      "validated_at"
+    ],
+    "actions": [
+      "id",
+      "decision_id",
+      "action_type",
+      "parameters_json",
+      "parameters_hash",
+      "status",
+      "execution_target",
+      "created_at",
+      "executed_at",
+      "result_json",
+      "idempotency_key"
+    ],
+    "authorizations": [
+      "id",
+      "action_id",
+      "decision_id",
+      "evidence_bindings_json",
+      "policy_version",
+      "parameters_hash",
+      "status",
+      "issued_at",
+      "consumed_at"
+    ],
+    "audit_events": [
+      "id",
+      "event_type",
+      "entity_type",
+      "entity_id",
+      "actor",
+      "reason",
+      "payload_json",
+      "created_at"
+    ]
+  },
+  "design_notes": [
+    "Dependencies can reference logical fact keys so new evidence versions do not orphan dependency edges.",
+    "Decision records bind exact evidence versions and policy version.",
+    "Authorization binds evidence versions, policy version, and action parameter hash.",
+    "The gateway repeats safety checks immediately before simulated external commit.",
+    "Execution uses Idempotency-Key to prevent duplicate simulated side effects.",
+    "The simulator is not a distributed transaction; production adapters require outbox/reconciliation semantics."
+  ]
+}

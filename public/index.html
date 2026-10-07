@@ -1,0 +1,144 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SC-SMT Control Plane</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="top">
+  <div>
+    <div class="eyebrow">AI KNOWLEDGE & ACTION GOVERNANCE</div>
+    <h1>SC-SMT Control Plane</h1>
+    <p>Track evidence changes, find affected decisions, revalidate them, and control connected actions.</p>
+  </div>
+  <div class="top-actions">
+    <button id="refresh" class="ghost">Refresh</button>
+    <button id="reset" class="ghost">Reset demo</button>
+  </div>
+</header>
+
+<div id="error" class="error hidden"></div>
+
+<main>
+  <section class="kpis">
+    <div class="kpi"><span>Evidence records</span><strong id="k-evidence">—</strong><small>Versioned records</small></div>
+    <div class="kpi"><span>Affected items</span><strong id="k-affected">—</strong><small>From current change</small></div>
+    <div class="kpi"><span>Decisions</span><strong id="k-decisions">—</strong><small>Registered decisions</small></div>
+    <div class="kpi"><span>Held actions</span><strong id="k-held">—</strong><small>Currently stopped by gateway</small></div>
+  </section>
+
+  <nav class="nav">
+    <button class="nav-btn active" onclick="switchView('dashboard',this)">Overview</button>
+    <button class="nav-btn" onclick="switchView('evidence',this)">Evidence</button>
+    <button class="nav-btn" onclick="switchView('dependencies',this)">Dependencies</button>
+    <button class="nav-btn" onclick="switchView('decisions',this)">Decisions</button>
+    <button class="nav-btn" onclick="switchView('actions',this)">Action Gate</button>
+    <button class="nav-btn" onclick="switchView('audit',this)">Audit Trail</button>
+  </nav>
+
+  <section id="dashboard" class="view">
+    <div class="two-col">
+      <div class="card">
+        <div class="card-head"><div><h2>Evidence change</h2><p>Purchase approval demo</p></div><div class="button-group">
+            <button id="simulate" class="secondary">Expire qualification</button>
+            <button id="renew" class="primary">Add new verified qualification</button>
+          </div></div>
+        <div class="change">
+          <div class="state"><span>Current record</span><b id="latest-version">EV-006</b><em id="latest-value">EXPIRED</em></div>
+          <div class="arrow">→</div>
+          <div class="state alert"><span>Effect</span><b>Approval dependency changed</b><em>Revalidation required</em></div>
+        </div>
+        <div class="callout">
+          <b>Business rule</b>
+          <div>A new purchase approval requires a currently qualified vendor.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div><h2>Action Gate</h2><p>Purchase-order submission</p></div><span id="action-status"></span></div>
+        <div id="gate" class="gate warn">
+          <span class="label">A-2207</span>
+          <div id="gate-status" class="gate-title">HOLD</div>
+          <p id="gate-reason">Execution is stopped until a valid decision and authorization exist.</p>
+        </div>
+        <div class="actions">
+          <button id="revalidate" class="secondary">Revalidate decision</button>
+          <button id="authorize" class="secondary" disabled>Authorize action</button>
+          <button id="execute" class="primary" disabled>Execute through gateway</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-head"><div><h2>Change Impact Map</h2><p>Application-declared dependencies</p></div></div>
+        <div id="impact" class="impact"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div><h2>What is enforced?</h2><p>Authorization is bound to the exact checked state</p></div></div>
+        <div class="checks">
+          <div>✓ Evidence version checked</div>
+          <div>✓ Evidence authority checked</div>
+          <div>✓ Validity interval checked</div>
+          <div>✓ Decision status checked</div>
+          <div>✓ Policy version bound</div>
+          <div>✓ Action parameter hash bound</div>
+          <div>✓ Execution-time check repeated</div>
+          <div>✓ Idempotency key required</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h2>Current decisions and actions</h2><p>End-to-end state at a glance</p></div></div>
+      <div class="status-row">
+        <div><span>Decision D-104</span><b id="decision-status"></b></div>
+        <div><span>Action A-2207</span><b id="action-status"></b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="evidence" class="view hidden">
+    <div class="card"><div class="card-head"><div><h2>Evidence Registry</h2><p>Received → verified → authoritative → current/superseded/expired</p></div></div>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Entity</th><th>Fact</th><th>Value</th><th>Source</th><th>Status</th><th>Version</th></tr></thead><tbody id="evidence-body"></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="dependencies" class="view hidden">
+    <div class="card"><div class="card-head"><div><h2>Dependency Registry</h2><p>Dependencies have explicit business meaning; cycles are rejected.</p></div></div>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Upstream</th><th></th><th>Downstream</th><th>Rule</th><th>Required State</th></tr></thead><tbody id="dep-body"></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="decisions" class="view hidden">
+    <div class="card"><div class="card-head"><div><h2>Decision Registry</h2><p>A decision records exactly which evidence and policy were checked.</p></div></div>
+      <div class="table-wrap"><table><thead><tr><th>ID</th><th>Type</th><th>Status</th><th>Policy</th><th>Decision hash</th><th>Validated</th></tr></thead><tbody id="decision-body"></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="actions" class="view hidden">
+    <div class="two-col">
+      <div class="card"><div class="card-head"><div><h2>Execution Gate</h2><p>No active authorization = no execution.</p></div></div>
+        <div class="gate warn"><div class="gate-title">A-2207</div><p>The simulated gateway performs a final state check immediately before the external action is committed.</p></div>
+        <div class="notice">The demo adapter is intentionally simulated. Real external connectors need their own idempotency and failure-recovery contract.</div>
+      </div>
+      <div class="card"><div class="card-head"><div><h2>Action Records</h2><p>State, target and execution timestamp</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th>ID</th><th>Action</th><th>Decision</th><th>Status</th><th>Target</th><th>Executed</th></tr></thead><tbody id="action-body"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="audit" class="view hidden">
+    <div class="card"><div class="card-head"><div><h2>Audit Trail</h2><p>Every governance transition records actor, reason and supporting context.</p></div></div>
+      <div id="audit-list" class="timeline"></div>
+    </div>
+  </section>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>
