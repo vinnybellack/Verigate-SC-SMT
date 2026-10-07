@@ -9,6 +9,11 @@ SC-SMT is an **AI and automated-decision governance layer** designed to keep dec
 Instead of treating new information as a simple memory update, SC-SMT evaluates how a change affects existing decisions, dependencies, authorizations, and actions.
 
 The system can identify when a previously valid decision is no longer trustworthy, place dependent actions on hold, require revalidation against current authoritative evidence, and prevent stale authorizations from being used for execution.
+
+<img width="1821" height="864" alt="AI Governance for Changing Knowledge" src="https://github.com/user-attachments/assets/0fa02ae0-acc7-4242-b16e-2e0c374920c4" />
+
+
+
 <img width="1877" height="888" alt="image" src="https://github.com/user-attachments/assets/63e53434-8a95-4abb-bac5-a6b57a7aa6c4" />
 
 ---
