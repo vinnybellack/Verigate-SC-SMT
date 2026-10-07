@@ -10,7 +10,8 @@ Instead of treating new information as a simple memory update, SC-SMT evaluates 
 
 The system can identify when a previously valid decision is no longer trustworthy, place dependent actions on hold, require revalidation against current authoritative evidence, and prevent stale authorizations from being used for execution.
 
-<img width="1821" height="864" alt="AI Governance for Changing Knowledge" src="https://github.com/user-attachments/assets/0fa02ae0-acc7-4242-b16e-2e0c374920c4" />
+<img width="1672" height="941" alt="VeriGate_ AI Governance Flowchart" src="https://github.com/user-attachments/assets/df8547e9-7c5a-47d5-a8e8-682362192710" />
+
 
 
 
